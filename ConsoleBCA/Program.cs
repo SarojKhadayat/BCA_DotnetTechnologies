@@ -1,5 +1,4 @@
-﻿using ConsoleBCA.Inheritance;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using DataModel;
@@ -11,6 +10,7 @@ using ConsoleBCA.InterfaceExample;
 using System.Reflection;
 using ConsoleBCA.Enum;
 using ConsoleBCA.Event;
+using ConsoleBCA.LambdaExpression;
 
 namespace ConsoleBCA
 {
@@ -194,35 +194,52 @@ namespace ConsoleBCA
             #endregion
 
             #region events practice work for students
-            Console.WriteLine("Enter event:");
-            int eventId = Convert.ToInt32(Console.ReadLine());
+            //Console.WriteLine("Enter event:");
+            //int eventId = Convert.ToInt32(Console.ReadLine());
 
-            Console.WriteLine("Enter message: ");
-            string msg = Console.ReadLine();
+            //Console.WriteLine("Enter message: ");
+            //string msg = Console.ReadLine();
 
-            HelperLogic helperLogic = new HelperLogic();
-            helperLogic.OnEventComplete += WriteMessageAndId;
-            helperLogic.OnEventComplete += WriteMessageAndIdToDatabase;
-            helperLogic.Help(eventId, msg);
+            //HelperLogic helperLogic = new HelperLogic();
+            //helperLogic.OnEventComplete += WriteMessageAndId;
+            //helperLogic.OnEventComplete += WriteMessageAndIdToDatabase;
+            //helperLogic.Help(eventId, msg);
 
             #endregion
 
             #region Lambda expression
-            List<Student> students = new List<Student> { new Student { FirstName = "Rajesh", Age = 18 }, new Student { FirstName = "Dilip", Age = 30 } };
-            Func<Student, bool> isTeenager = s => s.Age > 12 && s.Age < 20;
-            var filteredStudents = FilterStudents(students, isTeenager);
+            List<Student> students = new List<Student> {
+                new Student(1, "Amy", 22, "KTM"),
+                new Student(2, "Steve", 14, "Lalitpur"),
+                new Student(3, "Jack", 19,"Baneswor"),
+                new Student(4,"Jeff", 30, "Jawlakhel")
+            };
+            Func<Student, int, string, bool> studentFilter1 =
+                (student, age, name) => student.Age > age || student.Name == name;
 
-            Func<Student, bool> studentsStatingWithSr = s => s.FirstName.StartsWith("S");
-            var filteredStudents2= FilterStudents(students, studentsStatingWithSr);
+            Func<Student, int, string, bool> studentFilter2 =
+                (student, age, name) => student.Age > age || student.Name == name || student.Name.StartsWith(name);
+
+            var fStudents=  FilterStudentsUsingLambda(students, studentFilter1);
+
+            var fStudents2 = FilterStudentsUsingLambda(students, studentFilter2);
+
+            foreach (var student in fStudents) {
+                Console.WriteLine($"{student.Id}: {student.Name}: {student.Address}: {student.Age}");
+            }
             #endregion
             Console.ReadKey();
         }
 
-        public static IEnumerable<Student> FilterStudents(List<Student> students,Func<Student, bool> predicate) {
-            var filteredStudents = students.Where(predicate);
-            foreach (var student in filteredStudents)
+        public static List<Student> FilterStudentsUsingLambda(List<Student> students, Func<Student, int, string, bool> filter)
+        {
+            List<Student> filteredStudents = new();
+            foreach (var student in students)
             {
-                Console.WriteLine($"{student.FirstName} is teenager");
+                if (filter(student, 19, "Amy"))
+                {
+                    filteredStudents.Add(student);
+                }
             }
             return filteredStudents;
         }
@@ -355,7 +372,7 @@ namespace ConsoleBCA
                     obj = "Apl12445";
                     break;
                 case DataTypeEnum.obj:
-                    obj = new Student("Hello", "world", 1, "computer");
+                    obj = new ConsoleBCA.Inheritance.Student("Hello", "world", 1, "computer");
                     break;
                 default:
                     obj = null;
