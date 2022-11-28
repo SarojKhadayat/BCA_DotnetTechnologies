@@ -11,6 +11,8 @@ using System.Reflection;
 using ConsoleBCA.Enum;
 using ConsoleBCA.Event;
 using ConsoleBCA.LambdaExpression;
+using ConsoleBCA.ExceptionHandling;
+using System.Reflection.Metadata;
 
 namespace ConsoleBCA
 {
@@ -208,24 +210,60 @@ namespace ConsoleBCA
             #endregion
 
             #region Lambda expression
-            List<Student> students = new List<Student> {
-                new Student(1, "Amy", 22, "KTM"),
-                new Student(2, "Steve", 14, "Lalitpur"),
-                new Student(3, "Jack", 19,"Baneswor"),
-                new Student(4,"Jeff", 30, "Jawlakhel")
-            };
-            Func<Student, int, string, bool> studentFilter1 =
-                (student, age, name) => student.Age > age || student.Name == name;
+            //List<Student> students = new List<Student> {
+            //    new Student(1, "Amy", 22, "KTM"),
+            //    new Student(2, "Steve", 14, "Lalitpur"),
+            //    new Student(3, "Jack", 19,"Baneswor"),
+            //    new Student(4,"Jeff", 30, "Jawlakhel")
+            //};
+            //Func<Student, int, string, bool> studentFilter1 =
+            //    (student, age, name) => student.Age > age || student.Name == name;
 
-            Func<Student, int, string, bool> studentFilter2 =
-                (student, age, name) => student.Age > age || student.Name == name || student.Name.StartsWith(name);
+            //Func<Student, int, string, bool> studentFilter2 =
+            //    (student, age, name) => student.Age > age || student.Name == name || student.Name.StartsWith(name);
 
-            var fStudents=  FilterStudentsUsingLambda(students, studentFilter1);
+            //var fStudents=  FilterStudentsUsingLambda(students, studentFilter1);
 
-            var fStudents2 = FilterStudentsUsingLambda(students, studentFilter2);
+            //var fStudents2 = FilterStudentsUsingLambda(students, studentFilter2);
 
-            foreach (var student in fStudents) {
-                Console.WriteLine($"{student.Id}: {student.Name}: {student.Address}: {student.Age}");
+            //foreach (var student in fStudents) {
+            //    Console.WriteLine($"{student.Id}: {student.Name}: {student.Address}: {student.Age}");
+            //}
+            #endregion
+            #region Exception Handling
+            try
+            {
+                Console.WriteLine("Enter integer: ");
+                int a = Convert.ToInt32(Console.ReadLine());
+                if (a == 5)
+                {
+                    throw new DivideByFiveException("This program doesnot support divide by five");
+                }
+                var result = 10 / a;
+                Console.WriteLine("Value entered is {0}", a);
+            }
+            catch (DivideByZeroException ex)
+            {
+                Console.WriteLine("From divide by zero exception block.");
+                Console.WriteLine(ex);
+            }
+            catch (FormatException ex)
+            {
+                Console.WriteLine("From format exception block.");
+                Console.WriteLine(ex);
+            }
+            catch (DivideByFiveException ex) {
+                Console.WriteLine("From divide by 5 exception block.");
+                Console.WriteLine(ex);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("From common block");
+                Console.WriteLine(ex);
+            }
+            finally
+            {
+                Console.WriteLine("Finally block.");
             }
             #endregion
             Console.ReadKey();
